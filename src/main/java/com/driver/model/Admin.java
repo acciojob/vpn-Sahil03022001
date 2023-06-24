@@ -35,7 +35,7 @@ public class Admin {
         this.id = id;
     }
 
-    public String getusername() {
+    public String getUsername() {
         return userName;
     }
 
