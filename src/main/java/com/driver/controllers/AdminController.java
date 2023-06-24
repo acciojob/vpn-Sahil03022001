@@ -1,5 +1,7 @@
 package com.driver.controllers;
 
+import com.driver.model.Admin;
+import com.driver.model.ServiceProvider;
 import com.driver.services.impl.AdminServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,12 +17,12 @@ public class AdminController {
     @PostMapping("/register")
     public ResponseEntity<Void> registerAdmin(@RequestParam String username, @RequestParam String password){
         //create an admin and return
-        Admin admin = adminService.register(username, password);
+        adminService.register(username, password);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/addProvider")
-    public ResponseEntity<Void> addServiceProvider(@RequestParam int adminId, @RequestParam String providerName){
+    public ResponseEntity<Void> addServiceProvider(@RequestParam int adminId, @RequestParam String providerName) throws Exception {
         //add a serviceProvider under the admin and return updated admin
         Admin admin = adminService.addServiceProvider(adminId, providerName);
         return new ResponseEntity<>(HttpStatus.OK);
