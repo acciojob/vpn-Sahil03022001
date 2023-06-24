@@ -1,6 +1,5 @@
 package com.driver.services.impl;
 
-import com.driver.controllers.ConnectionController;
 import com.driver.model.*;
 import com.driver.repository.ConnectionRepository;
 import com.driver.repository.ServiceProviderRepository;
@@ -29,10 +28,10 @@ public class ConnectionServiceImpl implements ConnectionService {
         }
 
         User user = userOptional.get();
-        Country country = user.getCountry();
+        Country country = user.getOriginalCountry();
 
-        if(user.isConnected()) throw new Exception("Already connected");
-        if(countryName.equalsIgnoreCase(String.valueOf(user.getCountry().getCountryName()))) {
+        if(user.getConnected()) throw new Exception("Already connected");
+        if(countryName.equalsIgnoreCase(String.valueOf(user.getOriginalCountry().getCountryName()))) {
             return user;
         }
 
@@ -63,8 +62,8 @@ public class ConnectionServiceImpl implements ConnectionService {
         user.getConnectionList().add(connection);
         user.setMaskedIp(reqCountry.getCode() + "." + myServiceProvider.getId() + "." + user.getId());
         user.setConnected(true);
-        user.getCountry().setCountryName(reqCountry.getCountryName());
-        user.getCountry().setCode(reqCountry.getCode());
+        user.getOriginalCountry().setCountryName(reqCountry.getCountryName());
+        user.getOriginalCountry().setCode(reqCountry.getCode());
         return userRepository2.save(user);
     }
 
@@ -76,7 +75,7 @@ public class ConnectionServiceImpl implements ConnectionService {
         }
 
         User user = userOptional.get();
-        if(!user.isConnected()) throw new Exception("Already disconnected");
+        if(!user.getConnected()) throw new Exception("Already disconnected");
 
         String maskedIp = user.getMaskedIp();
         String[] arr = user.getMaskedIp().split("[.]");
@@ -94,8 +93,8 @@ public class ConnectionServiceImpl implements ConnectionService {
             }
         }
 
-        user.getCountry().setCode(code);
-        user.getCountry().setCountryName(countryName);
+        user.getOriginalCountry().setCode(code);
+        user.getOriginalCountry().setCountryName(countryName);
 
         return userRepository2.save(user);
     }
@@ -118,11 +117,11 @@ public class ConnectionServiceImpl implements ConnectionService {
         User sender = senderOptional.get();
         User receiver = receiverOptional.get();
 
-        if(sender.getCountry().getCountryName().equals(receiver.getCountry().getCountryName())) {
+        if(sender.getOriginalCountry().getCountryName().equals(receiver.getOriginalCountry().getCountryName())) {
             return sender;
         }
 
-        String receiverCountryCode = receiver.getCountry().getCode();
+        String receiverCountryCode = receiver.getOriginalCountry().getCode();
         ServiceProvider serviceProvider = null;
         List<ServiceProvider> serviceProviderList = sender.getServiceProviderList();
 
@@ -141,6 +140,6 @@ public class ConnectionServiceImpl implements ConnectionService {
             throw new Exception("Cannot establish communication");
         }
 
-        return connect(senderId, String.valueOf(receiver.getCountry().getCountryName()));
+        return connect(senderId, String.valueOf(receiver.getOriginalCountry().getCountryName()));
     }
 }
