@@ -35,11 +35,11 @@ public class Admin {
         this.id = id;
     }
 
-    public String getUserName() {
+    public String getusername() {
         return userName;
     }
 
-    public void setUserName(String userName) {
+    public void setUsername(String userName) {
         this.userName = userName;
     }
 
